@@ -1,28 +1,15 @@
-module Clock where
+module Clock (Model, init, view, Action, update, tick, tickInterval) where
 
-import Graphics.Element exposing (show)
-import Graphics.Collage exposing (..)
-import Graphics.Input exposing (clickable)
-import Text
-import Task exposing (Task, sleep, andThen, succeed)
+import Task exposing (Task, sleep, andThen)
 import Time exposing (Time)
-
---import Task exposing (Task, sleep, andThen, succeed)
-
---main =
---  Signal.map (view actions.address) model
 
 
 type alias Model = Int
 
 
-initialModel : Model
-initialModel =
+init : Model
+init =
   0
-
---view : Signal.Address Action -> Model -> String
---view address model =
---  timeView model
 
 
 view : Model -> String
@@ -64,15 +51,6 @@ update action model =
       model + 1
 
 
---actions : Signal.Mailbox Action
---actions =
---  Signal.mailbox Start
-
-
---model : Signal Model
---model =
---  Signal.foldp update initialModel actions.signal
-
 tick : Signal.Address Action -> Task x ()
 tick address =
   sleep 1000
@@ -85,13 +63,3 @@ tickInterval address interval =
   sleep interval
   `andThen` \_ -> Signal.send address Tick
   `andThen` (always (tickInterval address interval))
-
-
---tasksMailbox : Signal.Mailbox (Task x ())
---tasksMailbox =
---  Signal.mailbox (Task.succeed ())
-
-
---port tasks : Signal (Task x ())
---port tasks =
---  tasksMailbox.signal

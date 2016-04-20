@@ -19,7 +19,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-  { clock = Clock.initialModel
+  { clock = Clock.init
   , clockIsRunning = False
   }
 
