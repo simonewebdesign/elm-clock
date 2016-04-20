@@ -4,6 +4,8 @@ import Graphics.Element exposing (show)
 import Graphics.Collage exposing (..)
 import Graphics.Input exposing (clickable)
 import Text
+import Task exposing (Task, sleep, andThen, succeed)
+import Time exposing (Time)
 
 --import Task exposing (Task, sleep, andThen, succeed)
 
@@ -71,15 +73,18 @@ update action model =
 --model =
 --  Signal.foldp update initialModel actions.signal
 
+tick : Signal.Address Action -> Task x ()
+tick address =
+  sleep 1000
+  `andThen` \_ -> Signal.send address Tick
+  `andThen` (always (tick address))
 
---tick : Task x ()
---tick =
---  let
---    _ = Debug.log "tick" ()
---  in
---    sleep 1000
---    `andThen` \_ -> Signal.send actions.address Tick
---    `andThen` (always tick)
+
+tickInterval : Signal.Address Action -> Time -> Task x ()
+tickInterval address interval =
+  sleep interval
+  `andThen` \_ -> Signal.send address Tick
+  `andThen` (always (tickInterval address interval))
 
 
 --tasksMailbox : Signal.Mailbox (Task x ())

@@ -56,7 +56,7 @@ view address model =
     [ text <| "The time is " ++ (Clock.view model.clock)
     , button
         --[]
-        [ onClick tasksMailbox.address tick ]
+        [ onClick tasksMailbox.address (Clock.tick (Signal.forwardTo actions.address ClockAction)) ]
         --[ onClick address StartClock ]
         --[ onClick address ToggleClock ]
         [ text <| if model.clockIsRunning then "Stop timer" else "Start timer" ]
@@ -64,14 +64,14 @@ view address model =
     ]
 
 
-tick : Task x ()
-tick =
-  let
-    _ = Debug.log "tick" ()
-  in
-    sleep 1000
-    `andThen` \_ -> Signal.send actions.address (ClockAction Clock.Tick)
-    `andThen` (always tick)
+--tick : Task x ()
+--tick =
+--  let
+--    _ = Debug.log "tick" ()
+--  in
+--    sleep 1000
+--    `andThen` \_ -> Signal.send actions.address (ClockAction Clock.Tick)
+--    `andThen` (always tick)
 
 
 actions : Signal.Mailbox Action
