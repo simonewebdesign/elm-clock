@@ -5,31 +5,26 @@ import Graphics.Collage exposing (..)
 import Graphics.Input exposing (clickable)
 import Text
 
-import Task exposing (Task, sleep, andThen, succeed)
+--import Task exposing (Task, sleep, andThen, succeed)
 
-main =
-  Signal.map (view actions.address) model
+--main =
+--  Signal.map (view actions.address) model
 
 
 type alias Model = Int
 
 
-view : Signal.Address Action -> Model -> Graphics.Element.Element
-view address model =
-  collage 300 200
-    [ show (toString model)
-        |> toForm
+initialModel : Model
+initialModel =
+  0
 
-    , Text.fromString (timeView model)
-        |> Text.italic
-        |> text
-        |> moveY -20
-    ]
-  |> clickable (Signal.message tasksMailbox.address tick)
+--view : Signal.Address Action -> Model -> String
+--view address model =
+--  timeView model
 
 
-timeView : Model -> String
-timeView model =
+view : Model -> String
+view model =
   let
     seconds =
       let
@@ -59,7 +54,7 @@ type Action
 
 update : Action -> Model -> Model
 update action model =
-  case action of
+  case Debug.log "clock" action of
     Start ->
       model
 
@@ -67,33 +62,31 @@ update action model =
       model + 1
 
 
-actions : Signal.Mailbox Action
-actions =
-  Signal.mailbox Start
+--actions : Signal.Mailbox Action
+--actions =
+--  Signal.mailbox Start
 
 
-tasksMailbox : Signal.Mailbox (Task x ())
-tasksMailbox =
-  Signal.mailbox (Task.succeed ())
+--model : Signal Model
+--model =
+--  Signal.foldp update initialModel actions.signal
 
 
-initialModel : Model
-initialModel =
-  0
+--tick : Task x ()
+--tick =
+--  let
+--    _ = Debug.log "tick" ()
+--  in
+--    sleep 1000
+--    `andThen` \_ -> Signal.send actions.address Tick
+--    `andThen` (always tick)
 
 
-model : Signal Model
-model =
-  Signal.foldp update initialModel actions.signal
+--tasksMailbox : Signal.Mailbox (Task x ())
+--tasksMailbox =
+--  Signal.mailbox (Task.succeed ())
 
 
-tick : Task x ()
-tick =
-  sleep 1000
-  `andThen` \_ -> Signal.send actions.address Tick
-  `andThen` (always tick)
-
-
-port tasks : Signal (Task x ())
-port tasks =
-  tasksMailbox.signal
+--port tasks : Signal (Task x ())
+--port tasks =
+--  tasksMailbox.signal
