@@ -1,5 +1,6 @@
-module Clock (Model, init, view, Action, update, tick, tickInterval) where
+module Clock (Model, init, init', view, Action, update, tick, tickInterval, countdown) where
 
+import Signal exposing (Address)
 import Task exposing (Task, sleep, andThen)
 import Time exposing (Time)
 
@@ -10,6 +11,12 @@ type alias Model = Int
 init : Model
 init =
   0
+
+
+-- A double init might be another good reason to split this module into two.
+init' : Model -> Model
+init' model =
+  model
 
 
 view : Model -> String
@@ -39,6 +46,7 @@ view model =
 type Action
   = Start
   | Tick
+  | Tock
 
 
 update : Action -> Model -> Model
@@ -50,16 +58,33 @@ update action model =
     Tick ->
       model + 1
 
+    Tock ->
+      if model > 0 then
+        model - 1
+      else
+        model
 
-tick : Signal.Address Action -> Task x ()
+
+tick : Address Action -> Task x ()
 tick address =
   sleep 1000
   `andThen` \_ -> Signal.send address Tick
   `andThen` (always (tick address))
 
 
-tickInterval : Signal.Address Action -> Time -> Task x ()
+tickInterval : Address Action -> Time -> Task x ()
 tickInterval address interval =
   sleep interval
   `andThen` \_ -> Signal.send address Tick
   `andThen` (always (tickInterval address interval))
+
+
+-- It's in the same module because fundamentally it's also the same Model (Int).
+-- However we should consider a separate Countdown module, because we're going
+-- to have to handle the case where the countdown has finished and we don't
+-- have such case in a normal Clock/Timer.
+countdown : Address Action -> Task x ()
+countdown address =
+  sleep 1000
+  `andThen` \_ -> Signal.send address Tock
+  `andThen` (always (countdown address))

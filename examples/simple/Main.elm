@@ -19,7 +19,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-  { clock = Clock.init
+  { clock = Clock.init' 5
   , clockIsRunning = False
   }
 
@@ -56,7 +56,7 @@ view address model =
     [ text <| "The time is " ++ (Clock.view model.clock)
     , button
         --[]
-        [ onClick tasksMailbox.address (Clock.tick (Signal.forwardTo actions.address ClockAction)) ]
+        [ onClick tasksMailbox.address (Clock.countdown (Signal.forwardTo actions.address ClockAction)) ]
         --[ onClick address StartClock ]
         --[ onClick address ToggleClock ]
         [ text <| if model.clockIsRunning then "Stop timer" else "Start timer" ]
