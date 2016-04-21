@@ -14,6 +14,7 @@ init =
 
 
 -- A double init might be another good reason to split this module into two.
+-- Although the reason for it is just to be able to override the default.
 init' : Model -> Model
 init' model =
   model
@@ -85,6 +86,7 @@ tickInterval address interval =
 -- have such case in a normal Clock/Timer.
 countdown : Address Action -> Task x ()
 countdown address =
+  let _ = Debug.log "cd" () in
   sleep 1000
   `andThen` \_ -> Signal.send address Tock
   `andThen` (always (countdown address))
