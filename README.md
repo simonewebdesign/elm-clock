@@ -1,11 +1,3 @@
 # Elm Clock
 
-A timer that can either go backwards (countdown) or count to a future date. *Snazzy!*
-
-## Getting started
-
-No dependencies are required. Just grab the package and you're good to go:
-
-```
-elm package install simonewebdesign/elm-clock
-```
+**This package has been superseded by elm-timer: [GitHub](https://github.com/simonewebdesign/elm-timer)** 
